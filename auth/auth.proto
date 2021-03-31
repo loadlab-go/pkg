@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "github.com/loadlab-go/proto/auth;auth";
+
+message AuthenticateRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthenticateResponse { string jwt = 1; }
+
+message ValidateRequest { string jwt = 1; }
+
+message ValidateResponse { bool ok = 1; }
+
+service Auth {
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {}
+  rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+}

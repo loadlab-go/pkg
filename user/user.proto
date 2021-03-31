@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/loadlab-go/proto/user;user";
+
+message CreateRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message CreateResponse { int64 id = 1; }
+
+service User {
+  rpc Create(CreateRequest) returns (CreateResponse) {}
+}
