@@ -13,7 +13,15 @@ message GenerateJWTResponse { string token = 1; }
 
 message ValidateJWTRequest { string token = 1; }
 
-message ValidateJWTResponse { bool ok = 1; }
+message ValidateJWTResponse {
+  string aud = 1;
+  int64 exp = 2;
+  string jti = 3;
+  int64 iat = 4;
+  string iss = 5;
+  int64 nbf = 6;
+  string sub = 7;
+}
 
 service JWT {
   rpc GenerateJWT(GenerateJWTRequest) returns (GenerateJWTResponse) {}
