@@ -23,7 +23,7 @@ message ValidatePasswordRequest {
   string password = 2;
 }
 
-message ValidatePasswordResponse { bool ok = 1; }
+message ValidatePasswordResponse { int64 id = 1; }
 
 service User {
   rpc Get(GetRequest) returns (GetResponse) {}
