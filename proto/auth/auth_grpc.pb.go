@@ -18,8 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
-	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
+	GenerateAuthToken(ctx context.Context, in *GenerateAuthTokenRequest, opts ...grpc.CallOption) (*GenerateAuthTokenResponse, error)
+	ValidateAuthToken(ctx context.Context, in *ValidateAuthTokenRequest, opts ...grpc.CallOption) (*ValidateAuthTokenResponse, error)
 }
 
 type authClient struct {
@@ -30,18 +30,18 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error) {
-	out := new(AuthenticateResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/Authenticate", in, out, opts...)
+func (c *authClient) GenerateAuthToken(ctx context.Context, in *GenerateAuthTokenRequest, opts ...grpc.CallOption) (*GenerateAuthTokenResponse, error) {
+	out := new(GenerateAuthTokenResponse)
+	err := c.cc.Invoke(ctx, "/auth.Auth/GenerateAuthToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authClient) Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error) {
-	out := new(ValidateResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/Validate", in, out, opts...)
+func (c *authClient) ValidateAuthToken(ctx context.Context, in *ValidateAuthTokenRequest, opts ...grpc.CallOption) (*ValidateAuthTokenResponse, error) {
+	out := new(ValidateAuthTokenResponse)
+	err := c.cc.Invoke(ctx, "/auth.Auth/ValidateAuthToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +52,8 @@ func (c *authClient) Validate(ctx context.Context, in *ValidateRequest, opts ...
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
-	Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
-	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
+	GenerateAuthToken(context.Context, *GenerateAuthTokenRequest) (*GenerateAuthTokenResponse, error)
+	ValidateAuthToken(context.Context, *ValidateAuthTokenRequest) (*ValidateAuthTokenResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -61,11 +61,11 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+func (UnimplementedAuthServer) GenerateAuthToken(context.Context, *GenerateAuthTokenRequest) (*GenerateAuthTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateAuthToken not implemented")
 }
-func (UnimplementedAuthServer) Validate(context.Context, *ValidateRequest) (*ValidateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Validate not implemented")
+func (UnimplementedAuthServer) ValidateAuthToken(context.Context, *ValidateAuthTokenRequest) (*ValidateAuthTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthToken not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -80,38 +80,38 @@ func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
 	s.RegisterService(&Auth_ServiceDesc, srv)
 }
 
-func _Auth_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthenticateRequest)
+func _Auth_GenerateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateAuthTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).Authenticate(ctx, in)
+		return srv.(AuthServer).GenerateAuthToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/Authenticate",
+		FullMethod: "/auth.Auth/GenerateAuthToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).Authenticate(ctx, req.(*AuthenticateRequest))
+		return srv.(AuthServer).GenerateAuthToken(ctx, req.(*GenerateAuthTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_Validate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateRequest)
+func _Auth_ValidateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateAuthTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).Validate(ctx, in)
+		return srv.(AuthServer).ValidateAuthToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/Validate",
+		FullMethod: "/auth.Auth/ValidateAuthToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).Validate(ctx, req.(*ValidateRequest))
+		return srv.(AuthServer).ValidateAuthToken(ctx, req.(*ValidateAuthTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -124,12 +124,12 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Authenticate",
-			Handler:    _Auth_Authenticate_Handler,
+			MethodName: "GenerateAuthToken",
+			Handler:    _Auth_GenerateAuthToken_Handler,
 		},
 		{
-			MethodName: "Validate",
-			Handler:    _Auth_Validate_Handler,
+			MethodName: "ValidateAuthToken",
+			Handler:    _Auth_ValidateAuthToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,18 +4,20 @@ package auth;
 
 option go_package = "github.com/loadlab-go/proto/auth;auth";
 
-message AuthenticateRequest {
-  string username = 1;
-  string password = 2;
+message GenerateAuthTokenRequest {
+  int64 id = 1;
+  string username = 2;
 }
 
-message AuthenticateResponse { string jwt = 1; }
+message GenerateAuthTokenResponse { string token = 1; }
 
-message ValidateRequest { string jwt = 1; }
+message ValidateAuthTokenRequest { string token = 1; }
 
-message ValidateResponse { bool ok = 1; }
+message ValidateAuthTokenResponse { bool ok = 1; }
 
 service Auth {
-  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {}
-  rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+  rpc GenerateAuthToken(GenerateAuthTokenRequest)
+      returns (GenerateAuthTokenResponse) {}
+  rpc ValidateAuthToken(ValidateAuthTokenRequest)
+      returns (ValidateAuthTokenResponse) {}
 }

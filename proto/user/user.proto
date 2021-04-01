@@ -11,6 +11,23 @@ message CreateRequest {
 
 message CreateResponse { int64 id = 1; }
 
+message GetRequest { int64 id = 1; }
+
+message GetResponse {
+  string username = 1;
+  string password = 2;
+}
+
+message ValidatePasswordRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message ValidatePasswordResponse { bool ok = 1; }
+
 service User {
+  rpc Get(GetRequest) returns (GetResponse) {}
   rpc Create(CreateRequest) returns (CreateResponse) {}
+  rpc ValidatePassword(ValidatePasswordRequest)
+      returns (ValidatePasswordResponse) {}
 }
