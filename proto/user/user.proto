@@ -16,7 +16,6 @@ message GetRequest { int64 id = 1; }
 message GetResponse {
   int64 id = 1;
   string username = 2;
-  string password = 3;
 }
 
 message ValidatePasswordRequest {
