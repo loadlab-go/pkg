@@ -14,122 +14,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AuthClient is the client API for Auth service.
+// JWTClient is the client API for JWT service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AuthClient interface {
-	GenerateAuthToken(ctx context.Context, in *GenerateAuthTokenRequest, opts ...grpc.CallOption) (*GenerateAuthTokenResponse, error)
-	ValidateAuthToken(ctx context.Context, in *ValidateAuthTokenRequest, opts ...grpc.CallOption) (*ValidateAuthTokenResponse, error)
+type JWTClient interface {
+	GenerateJWT(ctx context.Context, in *GenerateJWTRequest, opts ...grpc.CallOption) (*GenerateJWTResponse, error)
+	ValidateJWT(ctx context.Context, in *ValidateJWTRequest, opts ...grpc.CallOption) (*ValidateJWTResponse, error)
 }
 
-type authClient struct {
+type jWTClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
-	return &authClient{cc}
+func NewJWTClient(cc grpc.ClientConnInterface) JWTClient {
+	return &jWTClient{cc}
 }
 
-func (c *authClient) GenerateAuthToken(ctx context.Context, in *GenerateAuthTokenRequest, opts ...grpc.CallOption) (*GenerateAuthTokenResponse, error) {
-	out := new(GenerateAuthTokenResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/GenerateAuthToken", in, out, opts...)
+func (c *jWTClient) GenerateJWT(ctx context.Context, in *GenerateJWTRequest, opts ...grpc.CallOption) (*GenerateJWTResponse, error) {
+	out := new(GenerateJWTResponse)
+	err := c.cc.Invoke(ctx, "/auth.JWT/GenerateJWT", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authClient) ValidateAuthToken(ctx context.Context, in *ValidateAuthTokenRequest, opts ...grpc.CallOption) (*ValidateAuthTokenResponse, error) {
-	out := new(ValidateAuthTokenResponse)
-	err := c.cc.Invoke(ctx, "/auth.Auth/ValidateAuthToken", in, out, opts...)
+func (c *jWTClient) ValidateJWT(ctx context.Context, in *ValidateJWTRequest, opts ...grpc.CallOption) (*ValidateJWTResponse, error) {
+	out := new(ValidateJWTResponse)
+	err := c.cc.Invoke(ctx, "/auth.JWT/ValidateJWT", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AuthServer is the server API for Auth service.
-// All implementations must embed UnimplementedAuthServer
+// JWTServer is the server API for JWT service.
+// All implementations must embed UnimplementedJWTServer
 // for forward compatibility
-type AuthServer interface {
-	GenerateAuthToken(context.Context, *GenerateAuthTokenRequest) (*GenerateAuthTokenResponse, error)
-	ValidateAuthToken(context.Context, *ValidateAuthTokenRequest) (*ValidateAuthTokenResponse, error)
-	mustEmbedUnimplementedAuthServer()
+type JWTServer interface {
+	GenerateJWT(context.Context, *GenerateJWTRequest) (*GenerateJWTResponse, error)
+	ValidateJWT(context.Context, *ValidateJWTRequest) (*ValidateJWTResponse, error)
+	mustEmbedUnimplementedJWTServer()
 }
 
-// UnimplementedAuthServer must be embedded to have forward compatible implementations.
-type UnimplementedAuthServer struct {
+// UnimplementedJWTServer must be embedded to have forward compatible implementations.
+type UnimplementedJWTServer struct {
 }
 
-func (UnimplementedAuthServer) GenerateAuthToken(context.Context, *GenerateAuthTokenRequest) (*GenerateAuthTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GenerateAuthToken not implemented")
+func (UnimplementedJWTServer) GenerateJWT(context.Context, *GenerateJWTRequest) (*GenerateJWTResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateJWT not implemented")
 }
-func (UnimplementedAuthServer) ValidateAuthToken(context.Context, *ValidateAuthTokenRequest) (*ValidateAuthTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateAuthToken not implemented")
+func (UnimplementedJWTServer) ValidateJWT(context.Context, *ValidateJWTRequest) (*ValidateJWTResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateJWT not implemented")
 }
-func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
+func (UnimplementedJWTServer) mustEmbedUnimplementedJWTServer() {}
 
-// UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AuthServer will
+// UnsafeJWTServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to JWTServer will
 // result in compilation errors.
-type UnsafeAuthServer interface {
-	mustEmbedUnimplementedAuthServer()
+type UnsafeJWTServer interface {
+	mustEmbedUnimplementedJWTServer()
 }
 
-func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
-	s.RegisterService(&Auth_ServiceDesc, srv)
+func RegisterJWTServer(s grpc.ServiceRegistrar, srv JWTServer) {
+	s.RegisterService(&JWT_ServiceDesc, srv)
 }
 
-func _Auth_GenerateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GenerateAuthTokenRequest)
+func _JWT_GenerateJWT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateJWTRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).GenerateAuthToken(ctx, in)
+		return srv.(JWTServer).GenerateJWT(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/GenerateAuthToken",
+		FullMethod: "/auth.JWT/GenerateJWT",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).GenerateAuthToken(ctx, req.(*GenerateAuthTokenRequest))
+		return srv.(JWTServer).GenerateJWT(ctx, req.(*GenerateJWTRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_ValidateAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ValidateAuthTokenRequest)
+func _JWT_ValidateJWT_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateJWTRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).ValidateAuthToken(ctx, in)
+		return srv.(JWTServer).ValidateJWT(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/auth.Auth/ValidateAuthToken",
+		FullMethod: "/auth.JWT/ValidateJWT",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).ValidateAuthToken(ctx, req.(*ValidateAuthTokenRequest))
+		return srv.(JWTServer).ValidateJWT(ctx, req.(*ValidateJWTRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
+// JWT_ServiceDesc is the grpc.ServiceDesc for JWT service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Auth_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "auth.Auth",
-	HandlerType: (*AuthServer)(nil),
+var JWT_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "auth.JWT",
+	HandlerType: (*JWTServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GenerateAuthToken",
-			Handler:    _Auth_GenerateAuthToken_Handler,
+			MethodName: "GenerateJWT",
+			Handler:    _JWT_GenerateJWT_Handler,
 		},
 		{
-			MethodName: "ValidateAuthToken",
-			Handler:    _Auth_ValidateAuthToken_Handler,
+			MethodName: "ValidateJWT",
+			Handler:    _JWT_ValidateJWT_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
